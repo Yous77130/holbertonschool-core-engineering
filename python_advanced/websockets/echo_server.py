@@ -4,7 +4,7 @@ import asyncio
 import websockets
 
 
-async def echo(websocket):
+async def connection_handler(websocket):
     """Gère une connexion : renvoie chaque message tel quel."""
     async for message in websocket:
         await websocket.send(message)
@@ -12,7 +12,7 @@ async def echo(websocket):
 
 async def main():
     """Démarre le serveur sur localhost:8765 et le maintient ouvert."""
-    async with websockets.serve(echo, "localhost", 8765):
+    async with websockets.serve(connection_handler, "localhost", 8765):
         await asyncio.Future()  # tourne indéfiniment
 
 
