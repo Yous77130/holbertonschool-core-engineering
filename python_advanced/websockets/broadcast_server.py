@@ -9,7 +9,7 @@ connected_clients = set()
 
 
 async def connection_handler(websocket):
-    """Diffuse chaque message reçu (préfixé B:) à tous les clients connectés."""
+    """Diffuse chaque message (prefixe B:) a tous les clients."""
     connected_clients.add(websocket)
     try:
         async for message in websocket:
