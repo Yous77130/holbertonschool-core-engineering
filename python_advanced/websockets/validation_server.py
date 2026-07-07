@@ -2,15 +2,19 @@
 """Serveur WebSocket avec validation : rejette les messages vides."""
 import asyncio
 import websockets
+from websockets.exceptions import ConnectionClosed
 
 
 async def connection_handler(websocket):
     """Valide chaque message : OK:<msg> si valide, ERR:EMPTY si vide."""
-    async for message in websocket:
-        if message.strip() == "":
-            await websocket.send("ERR:EMPTY")
-        else:
-            await websocket.send("OK:" + message)
+    try:
+        async for message in websocket:
+            if message.strip() == "":
+                await websocket.send("ERR:EMPTY")
+            else:
+                await websocket.send("OK:" + message)
+    except ConnectionClosed:
+        pass
 
 
 async def main():
