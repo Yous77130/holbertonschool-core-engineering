@@ -1,6 +1,15 @@
-from tools.file_writer import save_study_guide
+from google.adk.workflow._base_node import BaseNode
 
-if __name__ == "__main__":
-    test_content = "# Test\nCeci est un test d'écriture déterministe."
-    result = save_study_guide(test_content)
-    print(result)
+class ExplainerAgent(BaseNode):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.prompt = ""
+
+    def run(self):
+        return f"Explication pour : {self.prompt}"
+
+topic = "Python decorators"
+agent = ExplainerAgent()
+agent.prompt = f"Génère l'explication pour : {topic}"
+response = agent.run()
+print(response)
