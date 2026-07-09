@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """Point d'entrée : orchestre le pipeline séquentiel du guide d'étude."""
 import asyncio
+import json
 import os
 import sys
+from pathlib import Path
 
 import requests
 from dotenv import load_dotenv
@@ -19,6 +21,7 @@ load_dotenv()
 
 APP_NAME = "study_guide_app"
 OUTPUT_PATH = "output/study_guide.md"
+TOPIC_EXAMPLES_PATH = "data/topic_examples.json"
 REQUIRED_ENV_VARS = ("OLLAMA_API_BASE", "MODEL_NAME")
 
 
@@ -53,10 +56,20 @@ def check_ollama_ready(api_base: str, model_name: str) -> None:
         )
 
 
+def load_example_topics(path: str = TOPIC_EXAMPLES_PATH) -> list:
+    """Charge la liste des sujets d'exemple depuis data/topic_examples.json."""
+    try:
+        data = json.loads(Path(path).read_text(encoding="utf-8"))
+        return data.get("topics", [])
+    except (OSError, json.JSONDecodeError):
+        return []
+
+
 def get_topic_from_user() -> str:
     """Lit le sujet depuis les arguments de la ligne de commande."""
     if len(sys.argv) == 1:
-        return "Python decorators"
+        topics = load_example_topics()
+        return topics[0] if topics else "Python decorators"
 
     topic = " ".join(sys.argv[1:]).strip()
     if not topic:

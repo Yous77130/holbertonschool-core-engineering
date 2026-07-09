@@ -76,8 +76,9 @@ python main.py "Python list comprehensions"
 python main.py "HTTP status codes"
 ```
 
-Running with no arguments defaults to `"Python decorators"`. The generated
-guide is printed to the console and saved to `output/study_guide.md`.
+Running with no arguments uses the first entry in `data/topic_examples.json`
+(`"Python decorators"` by default) as the topic. The generated guide is
+printed to the console and saved to `output/study_guide.md`.
 
 ### Example output (excerpt)
 
@@ -134,7 +135,7 @@ ai-agents-intro/
 ├── output/
 │   └── study_guide.md       # generated on each run
 ├── data/
-│   └── topic_examples.json
+│   └── topic_examples.json  # example topics; first one is the default when no topic is given
 ├── main.py                  # orchestrates the sequential workflow
 ├── requirements.txt
 ├── .env.example
