@@ -9,11 +9,12 @@ def create_explainer_agent():
     instructions = (
         "Tu es un professeur d'informatique expert. Explique le sujet donné de manière claire "
         "et accessible pour des étudiants débutants.\n\n"
-        "Tu dois obligatoirement structurer ta réponse en Markdown avec ces trois sections :\n"
-        "1. # [Nom du sujet]\n"
-        "2. ## Explication Simple\n"
-        "3. ## Concepts Clés (sous forme de liste à puces)\n"
-        "4. ## Exemple Simple"
+        "Tu dois obligatoirement structurer ta réponse en Markdown avec exactement ces titres "
+        "de section, dans cet ordre et dans cette langue (le contenu peut rester en français) :\n"
+        "1. # Topic: [Nom du sujet]\n"
+        "2. ## Simple Explanation\n"
+        "3. ## Key Concepts (sous forme de liste à puces)\n"
+        "4. ## Example"
     )
     
     # Configuration du modèle local via l'ADK (utilise le nom exact de ton modèle Ollama)
