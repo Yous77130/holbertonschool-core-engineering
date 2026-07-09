@@ -14,7 +14,9 @@ def create_explainer_agent():
         "1. # Topic: [Nom du sujet]\n"
         "2. ## Simple Explanation\n"
         "3. ## Key Concepts (sous forme de liste à puces)\n"
-        "4. ## Example"
+        "4. ## Example\n"
+        "5. ## Common Mistakes (2 ou 3 erreurs fréquentes que font les débutants à propos de ce "
+        "sujet, pas à propos de l'exercice)"
     )
     
     # Configuration du modèle local via l'ADK (utilise le nom exact de ton modèle Ollama)

@@ -20,7 +20,9 @@ def create_reviewer_agent():
         "2. ### Missing Information (informations manquantes ou absentes du brouillon)\n"
         "3. ### Unclear Explanations (passages ambigus ou peu clairs)\n"
         "4. ### Suggestions for Improvement (recommandations courtes et actionnables)\n"
-        "5. ### Recommendation (une seule phrase : Approved ou Needs Revision, avec la raison)"
+        "5. ### Recommendation (une seule phrase : Approved ou Needs Revision, avec la raison)\n"
+        "6. ## Final Summary (un court paragraphe de 2 à 3 phrases résumant le sujet traité et "
+        "l'état général du guide, comme conclusion de ta relecture)"
     )
 
     # Configuration du modèle local via l'ADK (utilise le nom exact de ton modèle Ollama)
