@@ -1,3 +1,5 @@
+import os
+
 from google.adk.agents import Agent
 from google.adk.models.lite_llm import LiteLlm
 
@@ -21,8 +23,8 @@ def create_practice_designer_agent():
         "4. ### Hints (un ou deux indices, pas la solution)"
     )
 
-    # Configuration du modèle local via l'ADK (utilise le nom exact de ton modèle Ollama)
-    model_setup = LiteLlm(model="ollama_chat/llama3")
+    # Configuration du modèle local via l'ADK (nom exact défini dans MODEL_NAME, cf. .env.example)
+    model_setup = LiteLlm(model=os.environ.get("MODEL_NAME", "ollama_chat/llama3"))
 
     # Instanciation de l'agent selon les specs de l'ADK
     practice_designer_agent = Agent(

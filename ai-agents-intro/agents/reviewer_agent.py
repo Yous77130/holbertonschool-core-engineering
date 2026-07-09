@@ -1,3 +1,5 @@
+import os
+
 from google.adk.agents import Agent
 from google.adk.models.lite_llm import LiteLlm
 
@@ -25,8 +27,8 @@ def create_reviewer_agent():
         "l'état général du guide, comme conclusion de ta relecture)"
     )
 
-    # Configuration du modèle local via l'ADK (utilise le nom exact de ton modèle Ollama)
-    model_setup = LiteLlm(model="ollama_chat/llama3")
+    # Configuration du modèle local via l'ADK (nom exact défini dans MODEL_NAME, cf. .env.example)
+    model_setup = LiteLlm(model=os.environ.get("MODEL_NAME", "ollama_chat/llama3"))
 
     # Instanciation de l'agent selon les specs de l'ADK
     reviewer_agent = Agent(

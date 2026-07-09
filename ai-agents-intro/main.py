@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """Point d'entrée : orchestre le pipeline séquentiel du guide d'étude."""
 import asyncio
+import os
 import sys
 
+import requests
 from dotenv import load_dotenv
 from google.adk.runners import InMemoryRunner
 from google.genai import types
@@ -17,6 +19,49 @@ load_dotenv()
 
 APP_NAME = "study_guide_app"
 OUTPUT_PATH = "output/study_guide.md"
+REQUIRED_ENV_VARS = ("OLLAMA_API_BASE", "MODEL_NAME")
+
+
+def check_environment() -> tuple[str, str]:
+    """Vérifie que les variables d'environnement requises sont définies."""
+    missing = [var for var in REQUIRED_ENV_VARS if not os.environ.get(var)]
+    if missing:
+        raise EnvironmentError(
+            f"Variable(s) d'environnement manquante(s) : {', '.join(missing)}. "
+            "Copie .env.example vers .env et renseigne les valeurs avant de relancer le projet."
+        )
+    return os.environ["OLLAMA_API_BASE"], os.environ["MODEL_NAME"]
+
+
+def check_ollama_ready(api_base: str, model_name: str) -> None:
+    """Vérifie qu'Ollama répond et que le modèle demandé est bien disponible."""
+    try:
+        response = requests.get(f"{api_base}/api/tags", timeout=5)
+        response.raise_for_status()
+    except requests.exceptions.RequestException as error:
+        raise ConnectionError(
+            f"Impossible de joindre Ollama sur {api_base}. "
+            "Est-il lancé ? Démarre-le avec `ollama serve`."
+        ) from error
+
+    ollama_model = model_name.split("/", 1)[-1]
+    available = {entry["name"].split(":")[0] for entry in response.json().get("models", [])}
+    if ollama_model not in available:
+        raise LookupError(
+            f"Le modèle '{ollama_model}' n'est pas disponible dans Ollama. "
+            f"Récupère-le avec `ollama pull {ollama_model}`."
+        )
+
+
+def get_topic_from_user() -> str:
+    """Lit le sujet depuis les arguments de la ligne de commande."""
+    if len(sys.argv) == 1:
+        return "Python decorators"
+
+    topic = " ".join(sys.argv[1:]).strip()
+    if not topic:
+        raise ValueError("Le sujet ne peut pas être vide. Usage : python main.py <sujet>")
+    return topic
 
 
 async def run_agent(agent, prompt: str) -> str:
@@ -34,11 +79,6 @@ async def run_agent(agent, prompt: str) -> str:
         if event.is_final_response() and event.content and event.content.parts:
             final_text = event.content.parts[0].text or final_text
     return final_text
-
-
-def get_topic_from_user() -> str:
-    """Lit le sujet depuis les arguments de la ligne de commande."""
-    return " ".join(sys.argv[1:]) or "Python decorators"
 
 
 async def run_explainer_agent(topic: str) -> str:
@@ -84,9 +124,15 @@ async def build_study_guide(topic: str) -> str:
 
 
 def main():
-    topic = get_topic_from_user()
-    print(f"Génération du guide d'étude pour : {topic}\n")
+    try:
+        api_base, model_name = check_environment()
+        check_ollama_ready(api_base, model_name)
+        topic = get_topic_from_user()
+    except (EnvironmentError, ConnectionError, LookupError, ValueError) as error:
+        print(f"Erreur de configuration : {error}")
+        sys.exit(1)
 
+    print(f"Génération du guide d'étude pour : {topic}\n")
     final_markdown = asyncio.run(build_study_guide(topic))
     print(f"\n{final_markdown}")
 
@@ -94,7 +140,10 @@ def main():
     if report["valid"]:
         print("Validation : toutes les sections requises sont présentes.")
     else:
-        print(f"Validation : sections manquantes -> {report['missing']}")
+        print(
+            f"Validation : sections manquantes -> {report['missing']} "
+            "(le guide est tout de même sauvegardé)."
+        )
 
     result = save_markdown_file(OUTPUT_PATH, final_markdown)
     print(result)
