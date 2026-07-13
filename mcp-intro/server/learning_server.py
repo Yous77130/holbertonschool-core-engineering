@@ -67,11 +67,28 @@ def get_topic_details(topic_id: str) -> dict:
         if topic["id"].lower() == wanted:
             return topic
 
-    # Id inconnu : on retourne une erreur claire, sans planter.
     return {
         "error": f"Sujet introuvable : '{topic_id}'",
         "available_ids": [t["id"] for t in topics],
     }
+
+
+@mcp.resource("topics://catalog")
+def get_topic_catalog() -> str:
+    """Retourne le catalogue des sujets disponibles (ids et titres).
+
+    Ressource en LECTURE SEULE : elle expose des donnees, sans rien modifier.
+    Permet a un client de parcourir les sujets avant d'en choisir un.
+
+    Returns:
+        Une chaine JSON contenant la liste des sujets (id + titre).
+    """
+    topics = load_topics()
+    catalog = [
+        {"id": topic["id"], "title": topic["title"]}
+        for topic in topics
+    ]
+    return json.dumps({"topics": catalog}, ensure_ascii=False, indent=2)
 
 
 if __name__ == "__main__":
