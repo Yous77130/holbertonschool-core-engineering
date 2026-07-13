@@ -75,3 +75,16 @@ besoin**, pour trois raisons :
 
 C'est le principe du **moindre privilege** : ne donner que ce qui est
 strictement necessaire, rien de plus.
+
+## Lancer le serveur
+
+```bash
+source .venv/bin/activate
+python3 server/learning_server.py
+```
+
+Le serveur demarre et reste en ecoute (le terminal ne rend pas la main : c'est
+normal). Pour l'arreter : `Ctrl+C`.
+
+**Attention** : le serveur communique via stdio. Ne jamais utiliser `print()`
+dans le code du serveur, cela corromprait les messages du protocole.
