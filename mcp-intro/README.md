@@ -88,3 +88,31 @@ normal). Pour l'arreter : `Ctrl+C`.
 
 **Attention** : le serveur communique via stdio. Ne jamais utiliser `print()`
 dans le code du serveur, cela corromprait les messages du protocole.
+
+## Tester le serveur
+
+Un script de test verifie le serveur avant toute connexion a un agent :
+
+```bash
+source .venv/bin/activate
+python3 test_server.py
+```
+
+Il verifie : le demarrage du serveur, la liste des outils et ressources,
+`search_topics` avec une requete valide, `get_topic_details` avec un id valide,
+un cas d'entree invalide, et la lecture de la ressource `topics://catalog`.
+
+### Exemple de sortie
+
+Recherche `search_topics("decorator")` :
+```json
+[{"id": "python-decorators", "title": "Python Decorators",
+  "summary": "Un decorateur est une fonction qui enveloppe une autre fonction..."}]
+```
+
+Id inconnu `get_topic_details("java-lambdas")` :
+```json
+{"error": "Sujet introuvable : 'java-lambdas'",
+ "available_ids": ["python-decorators", "javascript-dom", "websockets",
+                   "flask-ssr", "recursion"]}
+```
