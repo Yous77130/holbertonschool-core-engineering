@@ -1,3 +1,49 @@
 {
-  "topics": []
+  "topics": [
+    {
+      "id": "python-decorators",
+      "title": "Python Decorators",
+      "summary": "Un decorateur est une fonction qui enveloppe une autre fonction pour ajouter un comportement sans modifier son code.",
+      "prerequisites": ["Fonctions", "Portee des variables", "Fonctions imbriquees"],
+      "key_concepts": ["Fonctions d'ordre superieur", "Fonction wrapper", "Syntaxe @decorator"],
+      "common_mistakes": ["Oublier de retourner la fonction wrapper", "Perdre le nom de la fonction d'origine"],
+      "practice_idea": "Ecrire un decorateur qui affiche le temps d'execution d'une fonction."
+    },
+    {
+      "id": "javascript-dom",
+      "title": "JavaScript DOM Manipulation",
+      "summary": "Le DOM represente la page HTML comme un arbre d'objets que JavaScript peut lire et modifier en direct.",
+      "prerequisites": ["Bases HTML", "Bases JavaScript", "Selecteurs CSS"],
+      "key_concepts": ["querySelector", "addEventListener", "createElement et appendChild"],
+      "common_mistakes": ["Placer le script avant les elements HTML cibles", "Confondre innerHTML et textContent"],
+      "practice_idea": "Creer un bouton qui ajoute dynamiquement un element a une liste."
+    },
+    {
+      "id": "websockets",
+      "title": "WebSockets",
+      "summary": "Les WebSockets ouvrent une connexion persistante entre client et serveur, permettant un echange de messages en temps reel dans les deux sens.",
+      "prerequisites": ["HTTP", "Programmation asynchrone", "Bases reseau"],
+      "key_concepts": ["Connexion persistante", "async et await", "Broadcast et unicast"],
+      "common_mistakes": ["Oublier de gerer la deconnexion du client", "Lancer le client sans avoir demarre le serveur"],
+      "practice_idea": "Construire un mini chat ou un message envoye par un client est diffuse a tous les autres."
+    },
+    {
+      "id": "flask-ssr",
+      "title": "Flask et Server-Side Rendering",
+      "summary": "Flask genere des pages HTML cote serveur avec le moteur de templates Jinja, puis les envoie pretes a l'affichage au navigateur.",
+      "prerequisites": ["Python", "Bases HTML", "Notion de requete HTTP"],
+      "key_concepts": ["Routes et decorateur @app.route", "render_template", "Boucles et conditions Jinja"],
+      "common_mistakes": ["Ne pas nommer le dossier exactement templates", "Oublier de fermer un bloc Jinja avec endfor ou endif"],
+      "practice_idea": "Afficher une liste d'objets lue depuis un fichier JSON dans une page HTML."
+    },
+    {
+      "id": "recursion",
+      "title": "Recursivite",
+      "summary": "Une fonction recursive s'appelle elle-meme sur un probleme plus petit, jusqu'a atteindre un cas de base qui arrete la descente.",
+      "prerequisites": ["Fonctions", "Conditions", "Pile d'appels"],
+      "key_concepts": ["Cas de base", "Cas recursif", "Reduction du probleme"],
+      "common_mistakes": ["Oublier le cas de base (boucle infinie)", "Ne pas reduire le probleme a chaque appel"],
+      "practice_idea": "Ecrire une fonction recursive qui calcule la factorielle d'un nombre."
+    }
+  ]
 }
