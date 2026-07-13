@@ -132,3 +132,94 @@ L'agent :
 5. sauvegarde le resultat dans `output/sample_agent_response.md`.
 
 Si aucun sujet ne correspond, l'agent l'indique clairement.
+
+## Revue d'un serveur MCP tiers
+
+### Serveur analyse : Filesystem MCP Server
+
+Package : `@modelcontextprotocol/server-filesystem` (npm), maintenu par
+l'equipe officielle Model Context Protocol. Licence MIT.
+
+### 1. Ce que fait le serveur
+
+Il permet a une application IA de lire, ecrire, chercher et gerer des fichiers
+et des dossiers sur la machine locale, via des commandes en langage naturel.
+C'est l'implementation de reference pour l'acces au systeme de fichiers en MCP.
+
+### 2. Local ou distant ?
+
+**Local.** C'est un serveur Node.js qui s'execute sur la machine de
+l'utilisateur, lance via `npx` (ou Docker). Il n'accede pas au reseau : il ne
+touche que le systeme de fichiers local, dans les dossiers autorises.
+
+### 3. Outils et ressources exposes
+
+Il expose plusieurs outils, separes en deux categories :
+
+**Lecture seule** (`readOnlyHint: true`) :
+- `read_text_file` — lire un fichier texte
+- `read_media_file` — lire une image ou un fichier audio
+- `read_multiple_files` — lire plusieurs fichiers
+- `list_directory` — lister le contenu d'un dossier
+- `list_directory_with_sizes` — lister avec les tailles
+- `list_allowed_directories` — voir quels dossiers sont autorises
+
+**Ecriture** (potentiellement destructifs) :
+- ecriture, deplacement et modification de fichiers dans les dossiers autorises
+
+Le serveur annote chaque outil pour que le client puisse distinguer les outils
+en lecture seule des outils capables d'ecrire, et signaler ceux qui peuvent
+etre destructeurs (ecrasement de donnees).
+
+### 4. Permissions et identifiants requis
+
+**Aucune cle API ni identifiant.** En revanche, il faut declarer explicitement
+les **dossiers autorises** au demarrage, en argument de la commande :
+
+```json
+{
+  "mcpServers": {
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem",
+               "/chemin/vers/mon-projet"]
+    }
+  }
+}
+```
+
+Sans dossier autorise declare, le serveur refuse de demarrer.
+
+### 5. Un risque identifie
+
+**Le risque principal : une portee d'acces trop large.** Une fois qu'un dossier
+est autorise, le serveur a un pouvoir **complet** dedans : lecture, ecriture,
+suppression. Si on pointe le serveur vers son dossier personnel (ou pire, vers
+la racine du disque), l'IA obtient un acces total a des fichiers sensibles :
+cles SSH, fichiers `.env`, documents prives, code source entier.
+
+Un autre danger : les outils d'ecriture peuvent **ecraser** des fichiers
+existants. Une mauvaise instruction, une hallucination du modele, ou une
+injection de prompt dans un fichier lu pourraient entrainer une perte de
+donnees.
+
+### 6. Une mesure de securite a appliquer
+
+**Appliquer le principe du moindre privilege : n'autoriser QUE le dossier
+strictement necessaire, jamais le dossier personnel ni la racine.**
+
+Concretement :
+- pointer le serveur vers un seul dossier de projet (ex :
+  `/home/user/projets/mon-projet`), pas vers `/home/user`
+- eviter les dossiers systeme (`/etc`, `C:\Windows`, `/System`)
+- si l'IA n'a besoin que de lire, monter le dossier en **lecture seule**
+  (via Docker, avec le flag `ro`), pour supprimer tout risque d'ecriture
+- relire regulierement la liste des dossiers autorises
+- lire le README du serveur **avant** de l'installer, et verifier qu'il provient
+  bien de la source officielle (le nom du package peut etre imite)
+
+### Ce que cette revue m'apprend
+
+Un serveur MCP est une **porte d'entree** sur mes systemes. Avant d'en installer
+un, je dois toujours me demander : *que peut-il lire ? que peut-il modifier ?
+quelles cles lui donne-t-on ?* Et ne lui accorder que le strict minimum.
