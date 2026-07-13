@@ -116,3 +116,19 @@ Id inconnu `get_topic_details("java-lambdas")` :
  "available_ids": ["python-decorators", "javascript-dom", "websockets",
                    "flask-ssr", "recursion"]}
 ```
+
+## Lancer l'agent
+
+```bash
+source .venv/bin/activate
+python3 client/agent.py "I want to study Python decorators. What should I review first?"
+```
+
+L'agent :
+1. se connecte au serveur MCP via un client MCP (jamais par import direct) ;
+2. appelle `search_topics` pour trouver un sujet correspondant ;
+3. appelle `get_topic_details` pour obtenir les informations completes ;
+4. formate une reponse Markdown a destination de l'etudiant ;
+5. sauvegarde le resultat dans `output/sample_agent_response.md`.
+
+Si aucun sujet ne correspond, l'agent l'indique clairement.
